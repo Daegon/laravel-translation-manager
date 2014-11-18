@@ -18,16 +18,19 @@ class Controller extends BaseController
         $this->manager = $manager;
     }
 
-    public function getIndex($group = null)
+    public function getGroup($group = null)
     {
         $locales = $this->loadLocales();
-        $groups = Translation::groupBy('group');
+        $groupsModels = Translation::groupBy('group');
         $excludedGroups = $this->manager->getConfig('exclude_groups');
         if($excludedGroups){
-            $groups->whereNotIn('group', $excludedGroups);
+            $groupsModels->whereNotIn('group', $excludedGroups);
         }
-        
-        $groups = array(''=>'Choose a group') + $groups->lists('group', 'group');
+
+        $groups = [];
+        foreach (array(''=>'Choose a group') + $groupsModels->lists('group', 'group') as $key => $value)
+            $groups[action('Barryvdh\TranslationManager\Controller@getGroup', ['group' => $value])] = $value;
+
         $numChanged = Translation::where('group', $group)->where('status', Translation::STATUS_CHANGED)->count();
 
 
