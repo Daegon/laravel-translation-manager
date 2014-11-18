@@ -29,7 +29,7 @@ class Controller extends BaseController
 
         $groups = [];
         foreach (array(''=>'Choose a group') + $groupsModels->lists('group', 'group') as $key => $value)
-            $groups[action('Barryvdh\TranslationManager\Controller@getGroup', ['group' => $value])] = $value;
+            $groups[action('Barryvdh\TranslationManager\Controller@getGroup', ['group' => $key])] = $value;
 
         $numChanged = Translation::where('group', $group)->where('status', Translation::STATUS_CHANGED)->count();
 
